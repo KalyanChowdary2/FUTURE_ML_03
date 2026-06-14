@@ -1,0 +1,70 @@
+[ ]
+    print("Matching Score:",
+          round(row['Matching_Score'], 2), "%")
+
+    print("Skills:", row['Extracted_Skills'])
+
+    print("Missing Skills:",
+          row['Missing_Skills'])
+
+    print("----------------------------------")
+
+
+Requirement already satisfied: pandas in /usr/local/lib/python3.12/dist-packages (2.2.2)
+Requirement already satisfied: numpy in /usr/local/lib/python3.12/dist-packages (2.0.2)
+Requirement already satisfied: scikit-learn in /usr/local/lib/python3.12/dist-packages (1.6.1)
+Requirement already satisfied: nltk in /usr/local/lib/python3.12/dist-packages (3.9.1)
+Collecting PyPDF2
+  Downloading pypdf2-3.0.1-py3-none-any.whl.metadata (6.8 kB)
+Collecting docx2txt
+  Downloading docx2txt-0.9-py3-none-any.whl.metadata (529 bytes)
+Requirement already satisfied: python-dateutil>=2.8.2 in /usr/local/lib/python3.12/dist-packages (from pandas) (2.9.0.post0)
+Requirement already satisfied: pytz>=2020.1 in /usr/local/lib/python3.12/dist-packages (from pandas) (2025.2)
+Requirement already satisfied: tzdata>=2022.7 in /usr/local/lib/python3.12/dist-packages (from pandas) (2026.2)
+Requirement already satisfied: scipy>=1.6.0 in /usr/local/lib/python3.12/dist-packages (from scikit-learn) (1.16.3)
+Requirement already satisfied: joblib>=1.2.0 in /usr/local/lib/python3.12/dist-packages (from scikit-learn) (1.5.3)
+Requirement already satisfied: threadpoolctl>=3.1.0 in /usr/local/lib/python3.12/dist-packages (from scikit-learn) (3.6.0)
+Requirement already satisfied: click in /usr/local/lib/python3.12/dist-packages (from nltk) (8.4.0)
+Requirement already satisfied: regex>=2021.8.3 in /usr/local/lib/python3.12/dist-packages (from nltk) (2025.11.3)
+Requirement already satisfied: tqdm in /usr/local/lib/python3.12/dist-packages (from nltk) (4.67.3)
+Requirement already satisfied: six>=1.5 in /usr/local/lib/python3.12/dist-packages (from python-dateutil>=2.8.2->pandas) (1.17.0)
+Downloading pypdf2-3.0.1-py3-none-any.whl (232 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 232.6/232.6 kB 5.2 MB/s eta 0:00:00
+Downloading docx2txt-0.9-py3-none-any.whl (4.0 kB)
+Installing collected packages: docx2txt, PyPDF2
+Successfully installed PyPDF2-3.0.1 docx2txt-0.9
+  Candidate_Name                                        Resume_Text
+0         Kalyan  \n        Python developer with experience in ...
+1          Rahul  \n        Web developer skilled in HTML, CSS, ...
+2          Sneha  \n        Data Scientist with knowledge of Pyt...
+3          Arjun  \n        Java developer with Spring Boot, MyS...
+4          Priya  \n        AI Engineer skilled in Python, NLP,\...
+
+JOB DESCRIPTION:
+
+
+Looking for a Data Scientist with skills in
+Python, Machine Learning, NLP,
+Deep Learning, SQL and Power BI.
+
+
+====================================
+CANDIDATE RANKING
+====================================
+
+Rank: 1
+Candidate: Sneha
+Matching Score: 55.51 %
+Skills: ['python', 'machine learning', 'deep learning', 'nlp', 'sql', 'power bi', 'tensorflow']
+Missing Skills: []
+----------------------------------
+Rank: 2
+Candidate: Priya
+Matching Score: 32.55 %
+Skills: ['python', 'machine learning', 'deep learning', 'nlp', 'power bi', 'tensorflow', 'flask']
+Missing Skills: ['sql']
+----------------------------------
+Rank: 3
+Candidate: Kalyan
+Matching Score: 31.72 %
+Skills: ['python', 'machine learning', 'deep learning', 'sql']
