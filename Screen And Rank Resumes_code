@@ -1,0 +1,241 @@
+
+
+# STEP 1 - INSTALL REQUIRED LIBRARIES
+# Run this only once in Jupyter Notebook
+
+!pip install pandas numpy scikit-learn nltk PyPDF2 docx2txt
+
+# ============================================
+# STEP 2 - IMPORT LIBRARIES
+# ============================================
+
+import pandas as pd
+import numpy as np
+import re
+import nltk
+import os
+
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
+
+import PyPDF2
+import docx2txt
+
+nltk.download('stopwords')
+from nltk.corpus import stopwords
+
+# ============================================
+# STEP 3 - CREATE SAMPLE RESUMES
+# ============================================
+
+resume_data = {
+    'Candidate_Name': [
+        'Kalyan',
+        'Rahul',
+        'Sneha',
+        'Arjun',
+        'Priya'
+    ],
+
+    'Resume_Text': [
+
+        '''
+        Python developer with experience in machine learning,
+        data analysis, pandas, numpy, scikit-learn,
+        deep learning and SQL.
+        ''',
+
+        '''
+        Web developer skilled in HTML, CSS, JavaScript,
+        React, Node.js and MongoDB.
+        ''',
+
+        '''
+        Data Scientist with knowledge of Python, Machine Learning,
+        NLP, TensorFlow, Deep Learning, SQL and Power BI.
+        ''',
+
+        '''
+        Java developer with Spring Boot, MySQL,
+        backend development and REST API skills.
+        ''',
+
+        '''
+        AI Engineer skilled in Python, NLP,
+        Machine Learning, Deep Learning,
+        Flask, TensorFlow and Power BI.
+        '''
+    ]
+}
+
+# Convert into DataFrame
+df = pd.DataFrame(resume_data)
+
+print(df)
+
+# ============================================
+# STEP 4 - JOB DESCRIPTION
+# ============================================
+
+job_description = """
+Looking for a Data Scientist with skills in
+Python, Machine Learning, NLP,
+Deep Learning, SQL and Power BI.
+"""
+
+print("\nJOB DESCRIPTION:\n")
+print(job_description)
+
+# ============================================
+# STEP 5 - TEXT CLEANING FUNCTION
+# ============================================
+
+stop_words = set(stopwords.words('english'))
+
+def clean_text(text):
+
+    # Convert to lowercase
+    text = text.lower()
+
+    # Remove special characters
+    text = re.sub(r'[^a-zA-Z ]', '', text)
+
+    # Tokenization
+    words = text.split()
+
+    # Remove stopwords
+    words = [word for word in words if word not in stop_words]
+
+    # Join words
+    text = " ".join(words)
+
+    return text
+
+# Clean resumes
+df['Cleaned_Resume'] = df['Resume_Text'].apply(clean_text)
+
+# Clean job description
+cleaned_jd = clean_text(job_description)
+
+# ============================================
+# STEP 6 - TF-IDF VECTORIZATION
+# ============================================
+
+resume_texts = df['Cleaned_Resume'].tolist()
+
+all_texts = resume_texts + [cleaned_jd]
+
+vectorizer = TfidfVectorizer()
+
+tfidf_matrix = vectorizer.fit_transform(all_texts)
+
+# ============================================
+# STEP 7 - COSINE SIMILARITY
+# ============================================
+
+resume_vectors = tfidf_matrix[:-1]
+
+job_vector = tfidf_matrix[-1]
+
+similarity_scores = cosine_similarity(resume_vectors, job_vector)
+
+df['Matching_Score'] = similarity_scores
+
+# Convert to percentage
+df['Matching_Score'] = df['Matching_Score'] * 100
+
+# ============================================
+# STEP 8 - SKILL EXTRACTION
+# ============================================
+
+skills = [
+    'python',
+    'machine learning',
+    'deep learning',
+    'nlp',
+    'sql',
+    'power bi',
+    'tensorflow',
+    'flask',
+    'react',
+    'mongodb',
+    'java'
+]
+
+def extract_skills(text):
+
+    text = text.lower()
+
+    found_skills = []
+
+    for skill in skills:
+        if skill in text:
+            found_skills.append(skill)
+
+    return found_skills
+
+# Extract skills
+df['Extracted_Skills'] = df['Resume_Text'].apply(extract_skills)
+
+# ============================================
+# STEP 9 - FIND MISSING SKILLS
+# ============================================
+
+job_skills = extract_skills(job_description)
+
+def missing_skills(candidate_skills):
+
+    missing = []
+
+    for skill in job_skills:
+        if skill not in candidate_skills:
+            missing.append(skill)
+
+    return missing
+
+df['Missing_Skills'] = df['Extracted_Skills'].apply(missing_skills)
+
+# ============================================
+# STEP 10 - RANK CANDIDATES
+# ============================================
+
+df = df.sort_values(by='Matching_Score', ascending=False)
+
+df.reset_index(drop=True, inplace=True)
+
+df['Rank'] = df.index + 1
+
+# ============================================
+# STEP 11 - FINAL OUTPUT
+# ============================================
+
+print("\n====================================")
+print("CANDIDATE RANKING")
+print("====================================\n")
+
+for index, row in df.iterrows():
+
+    print("Rank:", row['Rank'])
+    print("Candidate:", row['Candidate_Name'])
+
+    print("Matching Score:",
+          round(row['Matching_Score'], 2), "%")
+
+    print("Skills:", row['Extracted_Skills'])
+
+    print("Missing Skills:",
+          row['Missing_Skills'])
+
+    print("----------------------------------")
+
+# ============================================
+# STEP 12 - SAVE RESULTS
+# ============================================
+
+df.to_csv("resume_screening_results.csv", index=False)
+
+print("\nResults saved as resume_screening_results.csv")
+
+# ============================================
+# END OF PROJECT
+# ============================================
